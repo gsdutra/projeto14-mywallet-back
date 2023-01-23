@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt'
 import db from '../db.js'
-import joi from 'joi'
 import { stripHtml } from 'string-strip-html'
 
 export async function postSignUp(req, res){
