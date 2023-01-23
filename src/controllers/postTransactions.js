@@ -34,9 +34,11 @@ export async function postTransactions(req, res){
 			return res.status(422).send("Invalid type. Must be 'received' or 'spent'")
 		}
 
-		const transactionWithUser = {...transaction, userId, date}
+		transaction.ammount = Number(transaction.ammount).toFixed(2)
 
-		await db.collection("transactions").insertOne(transactionWithUser)
+		const fullTransaction = {...transaction, userId, date}
+
+		await db.collection("transactions").insertOne(fullTransaction)
 
 		res.sendStatus(201)
 
