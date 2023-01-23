@@ -1,5 +1,7 @@
 import joi from 'joi'
 import db from '../db.js'
+import dayjs from 'dayjs'
+
 export async function postTransactions(req, res){
 	try {
 		const transactionSchema = joi.object({
@@ -12,6 +14,16 @@ export async function postTransactions(req, res){
 
 		const transaction = req.body
 
+		const date = `${
+			dayjs().date()<9?
+			'0'+String(dayjs().date()):
+			dayjs().date()
+		}/${
+			dayjs().month()<9?
+			'0'+String(dayjs().month()+1):
+			dayjs().month()+1
+		}`
+
 		const validation = transactionSchema.validate(transaction, { abortEarly: true })
 
 		if (validation.error){
@@ -22,7 +34,7 @@ export async function postTransactions(req, res){
 			return res.status(422).send("Invalid type. Must be 'received' or 'spent'")
 		}
 
-		const transactionWithUser = {...transaction, userId}
+		const transactionWithUser = {...transaction, userId, date}
 
 		await db.collection("transactions").insertOne(transactionWithUser)
 
